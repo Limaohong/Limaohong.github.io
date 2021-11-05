@@ -111,7 +111,7 @@
           </p>
         </div>
       </div>
-      <input type="button" class="addTicket-btn btn" value="新增套票">
+      <input type="button" class="addTicket-btn btn" value="新增套票" id="addCard">
     </form>
   </section>
   <section class="main-content">
@@ -119,7 +119,7 @@
     <div class="search-area">
       <select name="" class="regionSearch">
         <option value="地區搜尋" disabled selected hidden>地區搜尋</option>
-        <option value="">全部地區</option>
+        <option value="ALL">全部地區</option>
         <option value="台北">台北</option>
         <option value="台中">台中</option>
         <option value="高雄">高雄</option>
@@ -128,94 +128,6 @@
     </div>
     <!-- 套票卡片區 -->
     <ul class="ticketCard-area">
-      <li class="ticketCard">
-        <div class="ticketCard-img">
-          <a href="#">
-            <img src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1332&q=80" alt="">
-          </a>
-          <div class="ticketCard-region">高雄</div>
-          <div class="ticketCard-rank">10</div>
-        </div>
-        <div class="ticketCard-content">
-          <div>
-            <h3>
-              <a href="#" class="ticketCard-name">綠島自由行套裝行程</a>
-            </h3>
-            <p class="ticketCard-description">
-              嚴選超高CP值綠島自由行套裝行程，多種綠島套裝組合。
-            </p>
-          </div>
-          <div class="ticketCard-info">
-            <p class="ticketCard-num">
-              <span><i class="fas fa-exclamation-circle"></i></span>
-              剩下最後 <span id="ticketCard-num"> 87 </span> 組
-            </p>
-            <p class="ticketCard-price">
-              TWD <span id="ticketCard-price">$1400</span>
-            </p>
-          </div>
-        </div>
-      </li>
-      <li class="ticketCard">
-        <div class="ticketCard-img">
-          <a href="#">
-            <img src="https://images.unsplash.com/photo-1523341139367-9de570b874ed?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1170&q=80" alt="">
-          </a>
-          <div class="ticketCard-region">台北</div>
-          <div class="ticketCard-rank">2</div>
-        </div>
-        <div class="ticketCard-content">
-          <div>
-            <h3>
-              <a href="#" class="ticketCard-name">清境高空觀景步道</a>
-            </h3>
-            <p class="ticketCard-description">
-              清境農場青青草原數十公頃碧草，這些景觀豐沛了清境觀景步道的風格，也涵養它無可取代的特色。
-            </p>
-          </div>
-          <div class="ticketCard-info">
-            <div class="ticketCard-num">
-              <p>
-                <span><i class="fas fa-exclamation-circle"></i></span>
-                剩下最後 <span id="ticketCard-num"> 99 </span> 組
-              </p>
-            </div>
-            <p class="ticketCard-price">
-              TWD <span id="ticketCard-price">$240</span>
-            </p>
-          </div>
-        </div>
-      </li>
-      <li class="ticketCard">
-        <div class="ticketCard-img">
-          <a href="#">
-            <img src="https://images.unsplash.com/photo-1517807289433-f0282e362596?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1120&q=80" alt="">
-          </a>
-          <div class="ticketCard-region">台中</div>
-          <div class="ticketCard-rank">7</div>
-        </div>
-        <div class="ticketCard-content">
-          <div>
-            <h3>
-              <a href="#" class="ticketCard-name">山林悠遊套票</a>
-            </h3>
-            <p class="ticketCard-description">
-              山林悠遊套票，結合南投清境高空步道、雙龍瀑布七彩吊橋、瑞龍瀑布園區之熱門景點。
-            </p>
-          </div>
-          <div class="ticketCard-info">
-            <div class="ticketCard-num">
-              <p>
-                <span><i class="fas fa-exclamation-circle"></i></span>
-                剩下最後 <span id="ticketCard-num"> 20 </span> 組
-              </p>
-            </div>
-            <p class="ticketCard-price">
-              TWD <span id="ticketCard-price">$1765</span>
-            </p>
-          </div>
-        </div>
-      </li>
     </ul>
     <!-- 查無關鍵字區 -->
     <div class="cantFind-area">
