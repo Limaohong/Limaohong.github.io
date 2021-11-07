@@ -31,8 +31,11 @@ let travelData = [
     }
 ];
 
+let nameArr = ['ticketName', 'ticketImgUrl', 'ticketRegion', 'ticketPrice', 'ticketNum', 'ticketRate', 'ticketDescription']
+
 //初始化
 window.onload = function () {
+    test();
     addTravelCard();
     addCard();
     selectChange();
@@ -42,8 +45,8 @@ function addTravelCard(inputDataArr) {
     let ulElement = document.querySelector('ul');
     let newDataContnet = '';
     let excuateArr = [];
-    inputDataArr?excuateArr=inputDataArr:excuateArr=travelData;
-    while(ulElement.hasChildNodes()) {
+    inputDataArr ? excuateArr = inputDataArr : excuateArr = travelData;
+    while (ulElement.hasChildNodes()) {
         ulElement.removeChild(ulElement.firstChild);
     }
     excuateArr.forEach(data => {
@@ -93,36 +96,37 @@ function addCard() {
         let ticketRate = document.querySelector('#ticketRate').value;
         let ticketDescription = document.querySelector('#ticketDescription').value;
 
-        let newDataContnet =
+        if(inputVerify()){
+            let newDataContnet =
             `
-        <li class="ticketCard">
-            <div class="ticketCard-img">
-                <a href="#">
-                <img src="${ticketImgUrl}" alt="">
-                </a>
-                <div class="ticketCard-region">${ticketRegion}</div>
-                <div class="ticketCard-rank">${ticketRate}</div>
-            </div>
-            <div class="ticketCard-content">
-                <div>
-                <h3>
-                    <a href="#" class="ticketCard-name">${ticketName}</a>
-                </h3>
-                <p class="ticketCard-description">
-                    ${ticketDescription}
-                </p>
+            <li class="ticketCard">
+                <div class="ticketCard-img">
+                    <a href="#">
+                    <img src="${ticketImgUrl}" alt="">
+                    </a>
+                    <div class="ticketCard-region">${ticketRegion}</div>
+                    <div class="ticketCard-rank">${ticketRate}</div>
                 </div>
-                <div class="ticketCard-info">
-                <p class="ticketCard-num">
-                    <span><i class="fas fa-exclamation-circle"></i></span>
-                    剩下最後 <span id="ticketCard-num"> ${ticketNum} </span> 組
-                </p>
-                <p class="ticketCard-price">
-                    TWD <span id="ticketCard-price">$${ticketPrice}</span>
-                </p>
+                <div class="ticketCard-content">
+                    <div>
+                    <h3>
+                        <a href="#" class="ticketCard-name">${ticketName}</a>
+                    </h3>
+                    <p class="ticketCard-description">
+                        ${ticketDescription}
+                    </p>
+                    </div>
+                    <div class="ticketCard-info">
+                    <p class="ticketCard-num">
+                        <span><i class="fas fa-exclamation-circle"></i></span>
+                        剩下最後 <span id="ticketCard-num"> ${ticketNum} </span> 組
+                    </p>
+                    <p class="ticketCard-price">
+                        TWD <span id="ticketCard-price">$${ticketPrice}</span>
+                    </p>
+                    </div>
                 </div>
-            </div>
-        </li>`;
+            </li>`;
         ulElement.innerHTML += newDataContnet;
 
         let travelDataLen = travelData.length;
@@ -137,7 +141,21 @@ function addCard() {
             "rate": ticketRate,
         }
         travelData.push(travelDataObj);
+        }
+
     })
+}
+
+function inputVerify(){
+    let flag = true;
+    nameArr.forEach(item => {
+        let itemVal = document.querySelector('#'+item).value;
+        if(!itemVal) {
+            flag = false;
+            document.querySelector('#i_'+item).style.display = 'block';
+        }
+    })
+    return flag;
 }
 
 function selectChange() {
@@ -146,14 +164,20 @@ function selectChange() {
         let selectDataArr = [];
         travelData.forEach(data => {
             let area = e.target.value;
-            if(area == 'ALL'){
+            if (area == 'ALL') {
                 selectDataArr = travelData;
-            } else if(data['area'] == area){
+            } else if (data['area'] == area) {
                 selectDataArr.push(data);
             }
         })
         let searchResultText = document.getElementById('searchResult-text');
         searchResultText.textContent = `本次搜尋共 ${selectDataArr.length} 筆資料`;
         addTravelCard(selectDataArr);
+    })
+}
+
+function test() {
+    nameArr.forEach(item => {
+        document.querySelector('#i_'+item).style.display = 'none';
     })
 }
