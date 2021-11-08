@@ -123,11 +123,22 @@
     }
   }
   
+  .search-input input, .search-input textarea, .search-input select {
+    width: 72%;
+    text-indent: 0.5rem;
+    background-color: #fff787;
+    color: #8f9181;
+    font-size: 1rem;
+    border: none;
+    border-bottom: 1px solid #00807E;
+    min-height: 38px;
+  }
+
   .addTicket-input input, .addTicket-input textarea, .addTicket-input select {
     width: 72%;
     text-indent: 0.5rem;
-    background-color: #F7F7F7;
-    color: #818A91;
+    background-color: #f7f7f7;
+    color: #8f9181;
     font-size: 1rem;
     border: none;
     border-bottom: 1px solid #00807E;
@@ -135,7 +146,7 @@
   }
   
   @media (max-width: 767px) {
-    .addTicket-input input, .addTicket-input textarea, .addTicket-input select {
+    .addTicket-input input, .addTicket-input textarea, .addTicket-input select ,.search-input input, .search-input textarea, .search-input select{
       width: 100%;
     }
   }
