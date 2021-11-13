@@ -52,7 +52,7 @@ function evtControl(){
  * @param {*} inputDataArr 
  */
 function addTravelCard(inputDataArr) {
-    let ulElement = document.querySelector('ul');
+    const ulElement = document.querySelector('ul');
     let newDataContnet = '';
     let excuateArr = [];
     if(inputDataArr) {
@@ -111,15 +111,15 @@ function addTravelCard(inputDataArr) {
  */
 function btnAddCard() {
     let addBtn = document.getElementById('addCard');
-    let ulElement = document.querySelector('ul');
+    const ulElement = document.querySelector('ul');
     addBtn.addEventListener('click', (e) => {
-        let ticketName = document.querySelector('#ticketName').value;
-        let ticketImgUrl = document.querySelector('#ticketImgUrl').value;
-        let ticketRegion = document.querySelector('#ticketRegion').value;
-        let ticketPrice = document.querySelector('#ticketPrice').value;
-        let ticketNum = document.querySelector('#ticketNum').value;
-        let ticketRate = document.querySelector('#ticketRate').value;
-        let ticketDescription = document.querySelector('#ticketDescription').value;
+        const ticketName = document.querySelector('#ticketName').value;
+        const ticketImgUrl = document.querySelector('#ticketImgUrl').value;
+        const ticketRegion = document.querySelector('#ticketRegion').value;
+        const ticketPrice = document.querySelector('#ticketPrice').value;
+        const ticketNum = document.querySelector('#ticketNum').value;
+        const ticketRate = document.querySelector('#ticketRate').value;
+        const ticketDescription = document.querySelector('#ticketDescription').value;
 
         if (inputVerify()) {
             let newDataContnet =
@@ -177,7 +177,7 @@ function btnAddCard() {
 function inputVerify() {
     let flag = true;
     nameArr.forEach(item => {
-        let itemVal = document.querySelector('#' + item).value;
+        const itemVal = document.querySelector('#' + item).value;
         if (!itemVal) {
             flag = false;
             document.querySelector('#i_' + item).style.display = 'block';
@@ -202,7 +202,7 @@ function renderCard(cardArray) {
  * 地區選擇事件
  */
 function regionSelect() {
-    let regionSearch = document.querySelector('.regionSearch');
+    const regionSearch = document.querySelector('.regionSearch');
     regionSearch.addEventListener('change', (e) => {
         let area = e.target.value;
         let state = 0;
@@ -259,7 +259,7 @@ function inputTextSelect() {
             return data.name.includes(inputText);
         })
         if(inputText == '') {
-            let regionSearch = document.querySelector('.regionSearch');
+            const regionSearch = document.querySelector('.regionSearch');
             triggerEvt(regionSearch,'change');
             rtnArr = tempData;
         }
