@@ -452,3 +452,8 @@
       margin-top: 0px;
     }
   }
+
+  #chart .c3-chart-arc text{
+    fill: black;
+    font-weight: bold;
+  }

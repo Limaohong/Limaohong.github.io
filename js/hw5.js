@@ -26,6 +26,7 @@ function getExternalData(){
     .then(response => {
         travelData = response.data.data;
         renderHTML();
+        renderC3();
     })
 }
 
@@ -167,7 +168,8 @@ function btnAddCard() {
             }
             travelData.push(travelDataObj);
         }
-
+        //重新renderC3
+        renderC3();
     })
 }
 
@@ -230,6 +232,7 @@ function regionSelect() {
             rtnArr = tempData;
         }
         renderCard(rtnArr);
+        renderC3(rtnArr);
     })
 }
 /**
@@ -264,6 +267,7 @@ function inputTextSelect() {
             rtnArr = tempData;
         }
         renderCard(rtnArr);
+        renderC3(rtnArr);
     })
 }
 
@@ -283,4 +287,39 @@ function messageHide() {
 function triggerEvt(el,event){
     let evt = new Event(event,{})
     el.dispatchEvent(evt);
+}
+
+/**
+ * C3 generate
+ */
+function renderC3(dataObj){
+    if(!dataObj) {
+        dataObj = travelData;
+    }
+    let totalObj = {};
+    dataObj.forEach(item=>{
+        if(!totalObj[item.area]) {
+            totalObj[item.area] = 1;
+        } else {
+            totalObj[item.area]+=1;
+        }
+    })
+    let newData = [];
+    let area = Object.keys(totalObj);
+    area.forEach(item => {
+        let ary = [];
+        ary.push(item);
+        ary.push(totalObj[item]);
+        newData.push(ary);
+    })
+    const chart = c3.generate({
+        bindto:"#chart",
+        data:{
+            columns:newData,
+            type:'donut'
+        },
+        donut:{
+            title:"套票地區比重"
+        }
+    })
 }
