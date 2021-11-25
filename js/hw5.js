@@ -28,6 +28,9 @@ function getExternalData(){
         renderHTML();
         renderC3();
     })
+    .catch((error)=>{
+        console.log('Catch data error the message is' + error)
+    })
 }
 
 /**
