@@ -14,27 +14,75 @@ function init() {
 function renderView() {
     renderOrderList();
     deleteAllButtonEvent();
+    renderC3();
 }
 
-// C3.js
-let chart = c3.generate({
-    bindto: '#chart', // HTML 元素綁定
-    data: {
-        type: "pie",
-        columns: [
-            ['Louvre 雙人床架', 1],
-            ['Antony 雙人床架', 2],
-            ['Anty 雙人床架', 3],
-            ['其他', 4],
-        ],
-        colors: {
-            "Louvre 雙人床架": "#DACBFF",
-            "Antony 雙人床架": "#9D7FEA",
-            "Anty 雙人床架": "#5434A7",
-            "其他": "#301E5F",
+function renderC3(){
+    let data = createC3Data();
+    renderC3View(data[0],data[1]);
+}
+
+function createC3Data() {
+    //整理資料
+    let countArr = [];
+    orderList.orders.forEach(order => {
+        let countObj = {};
+        let products = order.products;
+        products.forEach(product => {
+            let token = true
+            countObj = {
+                title: product.title,
+                id: product.id,
+                price: product.price,
+                quantity: product.quantity
+            }
+            //ID相同，則數量相加
+            countArr.forEach(item => {
+                if (item.id == product.id) {
+                    item.quantity += countObj.quantity
+                    token = false
+                }
+            })
+            if (token) {
+                countArr.push(countObj);
+            }
+        })
+    })
+    countArr.sort((a, b) => {
+        return (b.price * b.quantity) - (a.price * a.quantity)
+    })
+    let c3DataArr = [];
+    let colors = ['#DACBFF', '#9D7FEA', '#5434A7', '#301E5F'];
+    let c3ColorObj = {};
+    let otherValue = 0;
+    for (let i = 0; i < countArr.length; i++) {
+        let item = countArr[i];
+        let value = item.quantity * item.price;
+        if (i <= 2) {
+            c3DataArr.push([item.title, value]);
+        } else {
+            otherValue += value;
         }
-    },
-});
+    }
+    c3DataArr.push(['其他', otherValue]);
+    for (let i = 0; i < c3DataArr.length; i++) {
+        c3ColorObj[c3DataArr[i][0]] = colors[i]
+    }
+    return [c3DataArr,c3ColorObj]
+}
+
+function renderC3View(c3DataArr,c3ColorObj) {
+    let chart = c3.generate({
+        bindto: '#chart', // HTML 元素綁定
+        data: {
+            type: "pie",
+            columns: c3DataArr,
+            colors: c3ColorObj
+        },
+    });
+}
+
+
 
 /**
  * render orderList
