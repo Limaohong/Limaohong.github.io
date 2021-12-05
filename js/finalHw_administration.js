@@ -9,17 +9,20 @@ window.onload = function () {
 
 function init() {
     getOrderList();
+    btnEvent();
 }
 
+/**
+ * 畫面產出
+ */
 function renderView() {
     renderOrderList();
-    deleteAllButtonEvent();
     renderC3();
 }
 
-function renderC3(){
+function renderC3() {
     let data = createC3Data();
-    renderC3View(data[0],data[1]);
+    renderC3View(data[0], data[1]);
 }
 
 function createC3Data() {
@@ -68,10 +71,10 @@ function createC3Data() {
     for (let i = 0; i < c3DataArr.length; i++) {
         c3ColorObj[c3DataArr[i][0]] = colors[i]
     }
-    return [c3DataArr,c3ColorObj]
+    return [c3DataArr, c3ColorObj]
 }
 
-function renderC3View(c3DataArr,c3ColorObj) {
+function renderC3View(c3DataArr, c3ColorObj) {
     let chart = c3.generate({
         bindto: '#chart', // HTML 元素綁定
         data: {
@@ -116,7 +119,7 @@ function renderOrderList() {
         })
         tableData +=
             `
-        <tr id="${item.id}">
+        <tr>
             <td>${item.createdAt}</td>
             <td>
                 <p>${item.user.name}</p>
@@ -133,54 +136,41 @@ function renderOrderList() {
             </td>
             <td>2021/03/08</td>
             <td class="orderStatus">
-                <a href="#" id="paid_${item.id}">${paid}</a>
+                <a href="#" class="paid" data-id="${item.id}">${paid}</a>
             </td>
             <td>
-                <input type="button" class="delSingleOrder-Btn" id="del_${item.id}" value="刪除">
+                <input type="button" class="delSingleOrder-Btn" data-id="${item.id}" value="刪除">
             </td>
         </tr>
         `
     })
     orderPageTable.innerHTML = tableTitle + tableData;
-    paidButtonEvent();
-    deleteButtonEvent();
 }
 
-/**
- * paid button control
- */
-function paidButtonEvent() {
-    orderList.orders.forEach(order => {
-        const btnEl = document.querySelector('#paid_' + order.id);
-        btnEl.addEventListener('click', (e) => {
-            e.preventDefault();
-            let paid = order.paid ? false : true;
-            editOrderList(order.id, paid);
-        })
+function btnEvent() {
+    const tableEl = document.querySelector('.orderPage-list');
+    tableEl.addEventListener('click', (e) => {
+        console.log(e.target)
+        e.preventDefault();
+        e.stopPropagation();
+        let type = e.target.getAttribute('class');
+
+        if (type == 'paid') {
+            let paid = e.target.text;
+            paid = paid == '未處理' ? true : false;
+            let id = e.target.getAttribute('data-id');
+            editOrderList(id, paid);
+        } else if (type == 'delSingleOrder-Btn') {
+            let id = e.target.getAttribute('data-id');
+            deleteOrderItem(id);
+        } else if (type == "discardAllBtn") {
+            deleteAllOrder();
+        } else {
+            return;
+        }
     })
 }
 
-/**
- * delete button control
- */
-function deleteButtonEvent() {
-    orderList.orders.forEach(order => {
-        const btnEl = document.querySelector('#del_' + order.id);
-        btnEl.addEventListener('click', () => {
-            deleteOrderItem(order.id);
-        })
-    })
-}
-
-/**
- * delete all button control
- */
-function deleteAllButtonEvent() {
-    const btnEl = document.querySelector('.discardAllBtn');
-    btnEl.addEventListener('click', () => {
-        deleteAllOrder();
-    })
-}
 
 // 取得訂單列表
 function getOrderList() {
@@ -211,7 +201,8 @@ function editOrderList(orderId, paid) {
             }
         })
         .then(function (response) {
-            init();
+            orderList = response.data
+            renderView();
         })
 }
 
@@ -224,7 +215,8 @@ function deleteAllOrder() {
             }
         })
         .then(function (response) {
-            alert(response.data.message)
+            orderList = response.data
+            renderView();
         })
 }
 
@@ -237,7 +229,8 @@ function deleteOrderItem(orderId) {
             }
         })
         .then(function (response) {
-            console.log(response.data);
+            orderList = response.data
+            renderView();
         })
         .catch(function (response) {
             console.log(response.data);

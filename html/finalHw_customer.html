@@ -9,17 +9,11 @@
 </head>
 
 <body>
-    <script src="../js/finalHw_customer.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="../css/finalHw_customer.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
-    <!--C3.js -->
+    <link rel="stylesheet" href="../css/finalHw_customer.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.18/c3.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.18/c3.js"></script>
     <nav class="topBar">
         <div class="wrap">
             <h1><a href="#" class="logo">WOWOROOM</a></h1>
@@ -349,9 +343,32 @@
             <input type="submit" value="送出預訂資料" class="orderInfo-btn">
         </form>
     </section>
-
-    <!-- 預設 JS，請同學不要修改此處 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
+    <script src="../js/finalHw_customer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.7.18/c3.js"></script>
     <script>
+        // menu 切換
+        let menuOpenBtn = document.querySelector('.menuToggle');
+        let linkBtn = document.querySelectorAll('.topBar-menu a');
+        let menu = document.querySelector('.topBar-menu');
+        // 控制menu按鈕
+        function menuToggle() {
+            if (menu.classList.contains('openMenu')) {
+                menu.classList.remove('openMenu');
+            } else {
+                menu.classList.add('openMenu');
+            }
+        }
+        function closeMenu() {
+            menu.classList.remove('openMenu');
+        }
+        menuOpenBtn.addEventListener('click', menuToggle);
+
+        linkBtn.forEach((item) => {
+            item.addEventListener('click', closeMenu);
+        })
         document.addEventListener('DOMContentLoaded', function () {
             const ele = document.querySelector('.recommendation-wall');
             ele.style.cursor = 'grab';
@@ -391,6 +408,7 @@
             ele.addEventListener('mousedown', mouseDownHandler);
         });
     </script>
+
 </body>
 
 </html>

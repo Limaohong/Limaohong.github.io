@@ -1,15 +1,16 @@
 const api_path = "maohong";
 const token = "GfOOlXzRlMVNPWTKmD0tN68Cjkp2";
 let productList;
+let productCartTemp;
 
 //初始化
 window.onload = function () {
-  menuEvent();
   init();
 }
 
 function init() {
   getProductList();
+  btnEvent();
 }
 
 function renderView() {
@@ -21,33 +22,6 @@ function renderView() {
   productSelect();
   // form control
   validateFormAndSubmit();
-}
-
-/**
- * title menu 切換
- */
-function menuEvent() {
-  // menu 切換
-  let menuOpenBtn = document.querySelector('.menuToggle');
-  let linkBtn = document.querySelectorAll('.topBar-menu a');
-  let menu = document.querySelector('.topBar-menu');
-  menuOpenBtn.addEventListener('click', menuToggle);
-
-  linkBtn.forEach((item) => {
-    item.addEventListener('click', closeMenu);
-  })
-}
-
-// 控制menu按鈕
-function menuToggle() {
-  if (menu.classList.contains('openMenu')) {
-    menu.classList.remove('openMenu');
-  } else {
-    menu.classList.add('openMenu');
-  }
-}
-function closeMenu() {
-  menu.classList.remove('openMenu');
 }
 
 /**
@@ -85,7 +59,7 @@ function renderProductList(response) {
       <li class="productCard">
           <h4 class="productType">新品</h4>
           <img src="${item.images}" alt="">
-          <a href="#" class="addCardBtn" id="addCart_${item.id}">加入購物車</a>
+          <a href="#" class="addCardBtn" data-id="${item.id}">加入購物車</a>
           <h3>${item.title}</h3>
           <del class="originPrice">NT$${item.origin_price}</del>
           <p class="nowPrice">NT$${item.price}</p>
@@ -94,14 +68,6 @@ function renderProductList(response) {
     })
   }
   productWrapEl.innerHTML = itemContent;
-  //add 加入購物車 event
-  itemArr.forEach(item => {
-    const addCardBtn = document.querySelector('#addCart_' + item.id);
-    addCardBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      addCartItem(item.id, 1);
-    })
-  })
 }
 // 加入購物車
 function addCartItem(id, quantity) {
@@ -116,6 +82,31 @@ function addCartItem(id, quantity) {
         alert('加入成功!');
       }
       renderCart(response.data);
+    })
+
+}
+
+// 改變購物車物品數量
+/**
+ * 
+ * @param {*} id 
+ * @param {*} quantity 
+ */
+function changeCartQuantity(id, quantity) {
+  axios.patch(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`, {
+    data: {
+      "id": id,
+      "quantity": parseInt(quantity)
+    }
+  }).
+    then(function (response) {
+      if (response.data.status) {
+        alert('調整成功!');
+      }
+      renderCart(response.data);
+    })
+    .catch(error => {
+      console.log(error);
     })
 
 }
@@ -166,11 +157,60 @@ function createOrder(userData) {
     then(function (response) {
       if (response.data.status) {
         alert('送出成功')
+        let data = {
+          status: true,
+          carts: []
+        }
+        renderCart(data);
+        formReset();
       }
     })
     .catch(function (error) {
       console.log(error.response.data);
     })
+}
+
+function btnEvent() {
+  const productTable = document.querySelector('.productDisplay');
+  productTable.addEventListener('click', (e) => {
+    e.preventDefault();
+    let type = e.target.getAttribute('class');
+    let id = e.target.getAttribute('data-id');
+    if (type == 'addCardBtn') {
+      // 這裡加入購物車數量暫時固定為1
+      addCartItem(id, 1);
+    }
+  })
+  const shoppingCartTable = document.querySelector('.shoppingCart-table');
+  shoppingCartTable.addEventListener('click', (e) => {
+    e.preventDefault();
+    let type = e.target.getAttribute('class');
+    let id = e.target.getAttribute('data-id');
+    if (type) {
+      if (type == 'discardAllBtn') {
+        if (productCartTemp.length == 0) {
+          alert('購物車中無品項');
+        } else {
+          deleteAllCartList();
+        }
+      } else if (type.indexOf("delBtn") != -1) {
+        deleteCartItem(id);
+      } else {
+        return;
+      }
+    }
+
+  })
+  shoppingCartTable.addEventListener('change', (e) => {
+    let type = e.target.getAttribute('class');
+    let id = e.target.getAttribute('data-id');
+    if (type = "form-select") {
+      let value = e.target.value;
+      if (value != '請選擇數量') {
+        changeCartQuantity(id, value)
+      }
+    }
+  })
 }
 
 function renderCart(data) {
@@ -190,10 +230,11 @@ function renderCart(data) {
     if (menuData.length == 0) {
       menuList += '<tr><td>目前購物車中沒有品項</td></tr>';
     }
+    productCartTemp = menuData;
     menuData.forEach(arr => {
       let product = arr.product;
       total += product.price;
-      let optionVal = createOptionVal();
+      let optionVal = createOptionVal(arr.quantity);
       menuList +=
         `
           <tr id="${arr.id}">
@@ -205,13 +246,13 @@ function renderCart(data) {
               </td>
               <td>${product.price}</td>
               <td>
-                <select  class="form-select" aria-label="Default select example">
+                <select  class="form-select" data-id="${arr.id}" aria-label="Default select example" value="${arr.quantity}">
                   ${optionVal}
                 </select>
               </td>
               <td>${product.price}</td>
               <td class="discardBtn">
-                  <a href="#" class="material-icons" id="delBtn_${arr.id}">
+                  <a href="#" class="material-icons delBtn" data-id="${arr.id}">
                       clear
                   </a>
               </td>
@@ -233,24 +274,6 @@ function renderCart(data) {
       </tr>
       `;
     menuListEl.innerHTML = meunTitle + menuList + menuFooter
-    //刪除所有品項 button event
-    const delAllBtn = document.querySelector('.discardAllBtn');
-    delAllBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (menuData.length == 0) {
-        alert('購物車中無品項');
-      } else {
-        deleteAllCartList();
-      }
-    })
-    //個別產品刪除 button event
-    menuData.forEach(arr => {
-      const delBtn = document.querySelector('#delBtn_' + arr.id);
-      delBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        deleteCartItem(arr.id);
-      })
-    })
   } else {
     console.log(data.message);
   }
@@ -260,10 +283,14 @@ function renderCart(data) {
  * 產生option 1~10
  * @returns string
  */
-function createOptionVal() {
-  let optionVal = '<option selected>請選擇數量</option>';
+function createOptionVal(quantity) {
+  let optionVal = '<option selected disabled>請選擇數量</option>';
   for (let i = 1; i <= 10; i++) {
-    optionVal += `<option value="${i}">${i}</option>`
+    if (i == quantity) {
+      optionVal += `<option value="${i}" selected="selected">${i}</option>`
+    } else {
+      optionVal += `<option value="${i}">${i}</option>`
+    }
   }
   return optionVal;
 }
@@ -332,9 +359,14 @@ function productSelect() {
     })
     newCart = selectValue == '全部' ? productList.products : newCart;
     let newCartObj = {
-      status:true,
-      products:newCart
+      status: true,
+      products: newCart
     }
     renderProductList(newCartObj);
   })
+}
+
+function formReset() {
+  const form = document.querySelector('.orderInfo-form');
+  form.reset();
 }
