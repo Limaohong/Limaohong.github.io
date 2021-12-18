@@ -81,6 +81,7 @@ function addCartItem(id, quantity) {
       if (response.data.status) {
         alert('加入成功!');
       }
+      cartQuantityChange(response.data);
       renderCart(response.data);
     })
 
@@ -116,6 +117,7 @@ function changeCartQuantity(id, quantity) {
 function getCartList() {
   axios.get(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`).
     then(function (response) {
+      cartQuantityChange(response.data);
       renderCart(response.data);
     })
 }
@@ -125,7 +127,7 @@ function deleteAllCartList() {
   axios.delete(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts`).
     then(function (response) {
       renderCart(response.data);
-      console.log(response.data);
+      cartQuantityChange(response.data);
     })
 }
 
@@ -134,8 +136,24 @@ function deleteCartItem(cartId) {
   axios.delete(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/carts/${cartId}`).
     then(function (response) {
       renderCart(response.data);
+      cartQuantityChange(response.data);
       console.log(response.data);
     })
+}
+
+function cartQuantityChange(responseData) {
+  let prodcutLength = responseData.carts.length
+  const cartQuantity = document.querySelector('#cartQuantity');
+  cartQuantity.value = prodcutLength;
+  const discardAllBtn = document.querySelector('.discardAllBtn');
+  if (discardAllBtn) {
+    if (prodcutLength == 0) {
+      discardAllBtn.hidden = true;
+    } else {
+      discardAllBtn.hidden = false;
+    }
+  }
+  console.log('cartQuantityChange() ==> ' + prodcutLength)
 }
 
 // 送出購買訂單
@@ -176,9 +194,21 @@ function btnEvent() {
     e.preventDefault();
     let type = e.target.getAttribute('class');
     let id = e.target.getAttribute('data-id');
+    let flag = false;
     if (type == 'addCardBtn') {
-      // 這裡加入購物車數量暫時固定為1
-      addCartItem(id, 1);
+      productCartTemp.forEach(products => {
+        let productInCartId = products.product.id;
+        let quantity = products.quantity;
+        if (productInCartId == id) {
+          flag = true;
+          changeCartQuantity(products.id, quantity + 1);
+        }
+      })
+      if (!flag) {
+        // 這裡加入購物車數量暫時固定為1
+        addCartItem(id, 1);
+      }
+
     }
   })
   const shoppingCartTable = document.querySelector('.shoppingCart-table');
@@ -233,7 +263,8 @@ function renderCart(data) {
     productCartTemp = menuData;
     menuData.forEach(arr => {
       let product = arr.product;
-      total += product.price;
+      let quantity = arr.quantity;
+      total += (product.price * quantity);
       let optionVal = createOptionVal(arr.quantity);
       menuList +=
         `
@@ -314,6 +345,15 @@ function validateFormAndSubmit() {
       presence: {
         message: "是必填欄位"
       },
+      numericality: {
+        message: "欄位為非正確的號碼格式",
+        onlyInteger: true,
+        greaterThan: 0
+      },
+      length: {
+        message: "長度不正確，至少為8碼",
+        minimum: 8
+      }
     },
     Email: {
       presence: {
@@ -329,10 +369,21 @@ function validateFormAndSubmit() {
   btnSubmit.addEventListener('click', (e) => {
     e.preventDefault();
     let errors = validate(form, constraints);
+    const formData = new FormData(form);
     if (errors) {
-      Object.keys(errors).forEach(keys => {
-        document.querySelector(`p[data-message=${keys}]`).textContent = errors[keys]
-      })
+      for (let key of formData.keys()) {
+        if (errors[key]) {
+          document.querySelector(`p[data-message=${key}]`).textContent = errors[key];
+        } else {
+          const element = document.querySelector(`p[data-message=${key}]`);
+          if (element) {
+            document.querySelector(`p[data-message=${key}]`).textContent = '';
+          }
+        }
+      }
+      // Object.keys(errors).forEach(keys => {
+      //   document.querySelector(`p[data-message=${keys}]`).textContent = errors[keys]
+      // })
     } else {
       const formData = new FormData(form);
       const userData = {
