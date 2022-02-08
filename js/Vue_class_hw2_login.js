@@ -13,9 +13,7 @@ const App = {
             //  發送 API 至遠端並登入（並儲存 Token）
             axios.post(`${this.apiUrl}/admin/signin`, this.user)
                 .then((res) => {
-                    console.log(res);
                     const { token, expired } = res.data;
-                    console.log(token, expired)
                     document.cookie = `hexToken=${token}; expires=${new Date(expired)}`
                     window.location = 'Vue_class_hw1.html';
                 })

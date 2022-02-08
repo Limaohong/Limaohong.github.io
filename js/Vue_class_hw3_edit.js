@@ -20,7 +20,7 @@ const App = {
         const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
         // 在header 夾帶 Authorization : token 只要送過一次就可以被預設設定到
         axios.defaults.headers.common['Authorization'] = token;
-        //   this.checkAdmin();
+        this.checkAdmin();
         this.getAllProductData();
     }, methods: {
         checkAdmin() {
