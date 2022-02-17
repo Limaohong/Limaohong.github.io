@@ -78,19 +78,25 @@
                             <div class="col-sm-4">
                                 <div class="mb-3">
                                     <label for="imageUrl" class="form-label ">主要圖片</label>
-                                    <input type="text" class="form-control mb-2" placeholder="請輸入圖片連結" v-model="tempProduct.imageUrl">
+                                    <input type="text" class="form-control mb-2" placeholder="請輸入圖片連結"
+                                        v-model="tempProduct.imageUrl">
                                     <img class="img-fluid" :src="tempProduct.imageUrl">
                                 </div>
                                 <div class="mb-3">
                                     <h3>多圖新增</h3>
                                     <div v-if="Array.isArray(tempProduct.imagesUrl)">
-                                        <template v-for="(img,key) in tempProduct.imagesUrl" :key="'imagesUrl_'+id">
-                                            <input type="text" class="form-control mb-2" placeholder="請輸入圖片連結" v-model="tempProduct.imagesUrl[key]">
+                                        <template v-for="(img,key) in tempProduct.imagesUrl" :key="'imagesUrl_'+key">
+                                            <input type="text" class="form-control mb-2" placeholder="請輸入圖片連結"
+                                                v-model="tempProduct.imagesUrl[key]">
                                             <img class="img-fluid" :src="tempProduct.imagesUrl[key]">
                                         </template>
 
-                                        <button v-if="!tempProduct.imagesUrl.length || tempProduct.imagesUrl[tempProduct.imagesUrl.length-1]" class="btn btn-outline-primary btn-sm d-block w-100" @click="tempProduct.imagesUrl.push('')">新增圖片</button>
-                                        <button v-else class="btn btn-outline-danger btn-sm d-block w-100" @click="tempProduct.imagesUrl.pop()">刪除最後一張圖片</button>
+                                        <button
+                                            v-if="!tempProduct.imagesUrl.length || tempProduct.imagesUrl[tempProduct.imagesUrl.length-1]"
+                                            class="btn btn-outline-primary btn-sm d-block w-100"
+                                            @click="tempProduct.imagesUrl.push('')">新增圖片</button>
+                                        <button v-else class="btn btn-outline-danger btn-sm d-block w-100"
+                                            @click="tempProduct.imagesUrl.pop()">刪除最後一張圖片</button>
                                     </div>
                                 </div>
                             </div>
@@ -185,7 +191,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
         crossorigin="anonymous"></script>
-    <script src="../js/Vue_class_hw3_edit.js"></script>
+    <script src="/js/vue_class/week3/Vue_class_hw3.js"></script>
 </body>
 
 </html>
